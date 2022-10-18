@@ -1,0 +1,34 @@
+## oc create secret generic cloud-credentials --namespace open-cluster-management-backup --from-file cloud=credentials
+apiVersion: oadp.openshift.io/v1alpha1
+kind: DataProtectionApplication
+metadata:
+  name: acm
+  namespace: open-cluster-management-backup
+spec:
+  backupLocations:
+    - velero:
+        config:
+          profile: acm_backup
+          region: eu-west-2
+        credential:
+          key: cloud
+          name: cloud-credentials
+        default: true
+        objectStorage:
+          bucket: acm-jclaretm
+          prefix: velero
+        provider: aws
+  configuration:
+    restic:
+      enable: true
+    velero:
+      defaultPlugins:
+        - openshift
+        - aws
+        - kubevirt
+  snapshotLocations:
+    - velero:
+        config:
+          profile: acm_backup
+          region: eu-west-2
+        provider: aws
