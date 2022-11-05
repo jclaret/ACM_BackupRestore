@@ -18,6 +18,16 @@ metadata:
   name: advanced-cluster-management
   namespace: open-cluster-management
 spec:
+  config:
+    nodeSelector:
+      node-role.kubernetes.io/infra: ""
+    tolerations:
+      - key: infra
+        effect: NoSchedule
+        value: reserved
+      - key: infra
+        effect: NoExecute
+        value: reserved
   channel: release-2.6
   installPlanApproval: Automatic
   name: advanced-cluster-management

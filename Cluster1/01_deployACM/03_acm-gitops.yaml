@@ -59,7 +59,20 @@ spec:
     apiVersion: cluster.open-cluster-management.io/v1alpha1
     name: all-openshift-clusters
     namespace: openshift-gitops
-
+---
+apiVersion: pipelines.openshift.io/v1alpha1
+kind: GitopsService
+metadata:
+  name: cluster
+spec:
+  runOnInfra: true
+  tolerations:
+  - effect: NoSchedule
+    key: infra
+    value: reserved
+  - effect: NoExecute
+    key: infra
+    value: reserved
 ##
 ### oc label ManagedCluster jclaretm02 cluster.open-cluster-management.io/clusterset=all-openshift-clusters --overwrite
 ### oc label ManagedCluster jclaretm02 gitops-cluster=true environment=production

@@ -1,0 +1,79 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  annotations:
+    machine.openshift.io/GPU: "0"
+    machine.openshift.io/memoryMb: "65536"
+    machine.openshift.io/vCPU: "16"
+  labels:
+    machine.openshift.io/cluster-api-cluster: cluster-5x6lw-xgghf
+  name: cluster-5x6lw-xgghf-infra-us-east-2c
+  namespace: openshift-machine-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: cluster-5x6lw-xgghf
+      machine.openshift.io/cluster-api-machineset: cluster-5x6lw-xgghf-infra-us-east-2c
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: cluster-5x6lw-xgghf
+        machine.openshift.io/cluster-api-machine-role: infra
+        machine.openshift.io/cluster-api-machine-type: infra
+        machine.openshift.io/cluster-api-machineset: cluster-5x6lw-xgghf-infra-us-east-2c
+    spec:
+      lifecycleHooks: {}
+      metadata: {}
+      providerSpec:
+        value:
+          ami:
+            id: ami-02c627a4f7f3cef78
+          apiVersion: awsproviderconfig.openshift.io/v1beta1
+          blockDevices:
+          - ebs:
+              encrypted: true
+              iops: 0
+              kmsKey:
+                arn: ""
+              volumeSize: 100
+              volumeType: gp2
+          credentialsSecret:
+            name: aws-cloud-credentials
+          deviceIndex: 0
+          iamInstanceProfile:
+            id: cluster-5x6lw-xgghf-worker-profile
+          instanceType: m5.4xlarge
+          kind: AWSMachineProviderConfig
+          metadata:
+            creationTimestamp: null
+          placement:
+            availabilityZone: us-east-2c
+            region: us-east-2
+          securityGroups:
+          - filters:
+            - name: tag:Name
+              values:
+              - cluster-5x6lw-xgghf-worker-sg
+          subnet:
+            filters:
+            - name: tag:Name
+              values:
+              - cluster-5x6lw-xgghf-private-us-east-2c
+          tags:
+          - name: kubernetes.io/cluster/cluster-5x6lw-xgghf
+            value: owned
+          - name: Stack
+            value: project ocp4-cluster-5x6lw
+          - name: env_type
+            value: ocp4-cluster
+          - name: guid
+            value: 5x6lw
+          - name: owner
+            value: unknown
+          - name: platform
+            value: RHPDS
+          - name: uuid
+            value: 65ec6d0c-b6e8-5835-8ee6-bffcafe57861
+          userDataSecret:
+            name: worker-user-data

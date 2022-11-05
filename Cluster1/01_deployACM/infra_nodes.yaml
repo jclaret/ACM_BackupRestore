@@ -1,0 +1,79 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  annotations:
+    machine.openshift.io/GPU: "0"
+    machine.openshift.io/memoryMb: "65536"
+    machine.openshift.io/vCPU: "16"
+  labels:
+    machine.openshift.io/cluster-api-cluster: cluster-vmjts-5b7nj
+  name: cluster-vmjts-5b7nj-infra-us-east-2c
+  namespace: openshift-machine-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: cluster-vmjts-5b7nj
+      machine.openshift.io/cluster-api-machineset: cluster-vmjts-5b7nj-infra-us-east-2c
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: cluster-vmjts-5b7nj
+        machine.openshift.io/cluster-api-machine-role: infra
+        machine.openshift.io/cluster-api-machine-type: infra
+        machine.openshift.io/cluster-api-machineset: cluster-vmjts-5b7nj-infra-us-east-2c
+    spec:
+      lifecycleHooks: {}
+      metadata: {}
+      providerSpec:
+        value:
+          ami:
+            id: ami-02c627a4f7f3cef78
+          apiVersion: awsproviderconfig.openshift.io/v1beta1
+          blockDevices:
+          - ebs:
+              encrypted: true
+              iops: 0
+              kmsKey:
+                arn: ""
+              volumeSize: 100
+              volumeType: gp2
+          credentialsSecret:
+            name: aws-cloud-credentials
+          deviceIndex: 0
+          iamInstanceProfile:
+            id: cluster-vmjts-5b7nj-worker-profile
+          instanceType: m5.4xlarge
+          kind: AWSMachineProviderConfig
+          metadata:
+            creationTimestamp: null
+          placement:
+            availabilityZone: us-east-2c
+            region: us-east-2
+          securityGroups:
+          - filters:
+            - name: tag:Name
+              values:
+              - cluster-vmjts-5b7nj-worker-sg
+          subnet:
+            filters:
+            - name: tag:Name
+              values:
+              - cluster-vmjts-5b7nj-private-us-east-2c
+          tags:
+          - name: kubernetes.io/cluster/cluster-vmjts-5b7nj
+            value: owned
+          - name: uuid
+            value: 8ea4c0bc-fcad-5964-bcfd-da4e5c766081
+          - name: Stack
+            value: project ocp4-cluster-vmjts
+          - name: env_type
+            value: ocp4-cluster
+          - name: guid
+            value: vmjts
+          - name: owner
+            value: unknown
+          - name: platform
+            value: RHPDS
+          userDataSecret:
+            name: worker-user-data
